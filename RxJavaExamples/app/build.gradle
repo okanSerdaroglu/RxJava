@@ -31,4 +31,11 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    def rx_java_version = "3.0.3"
+    implementation "io.reactivex.rxjava3:rxjava:$rx_java_version"
+
+    def rx_android_version = "3.0.0"
+    implementation "io.reactivex.rxjava3:rxandroid:$rx_android_version"
+
 }
