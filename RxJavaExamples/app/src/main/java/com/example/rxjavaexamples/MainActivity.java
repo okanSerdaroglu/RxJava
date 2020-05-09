@@ -13,7 +13,9 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     // ui
     private TextView text;
+
+    private CompositeDisposable disposables = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSubscribe(@NonNull Disposable d) {
                 Log.d(TAG, "onSubscribe: " + Thread.currentThread().getName());
                 Log.d(TAG, "onSubscribe: called");
+                disposables.add(d);
             }
 
             @Override
@@ -74,5 +79,15 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onComplete: called");
             }
         });
+
+
+        disposables.add(taskObservable.subscribe(task -> Log.d(TAG, "accept: ")));
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        disposables.clear();
     }
 }
