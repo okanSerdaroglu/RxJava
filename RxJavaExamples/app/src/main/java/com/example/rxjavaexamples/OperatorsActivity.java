@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.example.rxjavaexamples.models.Task;
 import com.example.rxjavaexamples.util.DataSource;
 
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
@@ -41,9 +43,81 @@ public class OperatorsActivity extends AppCompatActivity {
 
     }
 
-    private void repeat (){
+    private void timer() {
+        Observable<Long> timerObservable = Observable
+                .timer(1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .takeWhile(new Predicate<Long>() {
+                    @Override
+                    public boolean test(Long aLong) throws Throwable {
+                        Log.d(TAG, "test: " + aLong);
+                        return aLong <= 5;
+                    }
+                }).observeOn(AndroidSchedulers.mainThread());
+
+        timerObservable.subscribe(new Observer<Long>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(@NonNull Long aLong) {
+                Log.d(TAG, "onNext: " + aLong);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
+
+    private void interval() {
+        Observable<Long> intervalObservable = Observable
+                .interval(1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .takeWhile(new Predicate<Long>() {
+                    @Override
+                    public boolean test(Long aLong) throws Throwable {
+                        Log.d(TAG,
+                                "test: " + aLong + ", thread: " + Thread.currentThread().getName());
+                        return aLong <= 5;
+                    }
+                }).observeOn(AndroidSchedulers.mainThread());
+
+        intervalObservable.subscribe(new Observer<Long>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(@NonNull Long aLong) {
+                Log.d(TAG, "onNext: " + aLong);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
+    }
+
+    private void repeat() {
         Observable<Integer> observable = Observable
-                .range(0,9)
+                .range(0, 9)
                 .subscribeOn(Schedulers.io())
                 .repeat(3)
                 .observeOn(AndroidSchedulers.mainThread());
@@ -72,16 +146,16 @@ public class OperatorsActivity extends AppCompatActivity {
 
     }
 
-    private void map (){
+    private void map() {
         Observable<Task> observable = Observable
-                .range(0,9)
+                .range(0, 9)
                 .subscribeOn(Schedulers.io())
                 .map(new Function<Integer, Task>() {
                     @Override
                     public Task apply(Integer integer) throws Throwable {
-                        Log.d(TAG, "apply: "+ Thread.currentThread().getName());
+                        Log.d(TAG, "apply: " + Thread.currentThread().getName());
                         return new Task("this is task with priority: "
-                                + String.valueOf(integer),false,integer);
+                                + String.valueOf(integer), false, integer);
                     }
                 }).takeWhile(new Predicate<Task>() {
                     @Override
@@ -114,9 +188,9 @@ public class OperatorsActivity extends AppCompatActivity {
 
     }
 
-    private void createRange(){
+    private void createRange() {
         Observable<Integer> observable = Observable
-                .range(0,9)
+                .range(0, 9)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
@@ -128,7 +202,7 @@ public class OperatorsActivity extends AppCompatActivity {
 
             @Override
             public void onNext(@NonNull Integer integer) {
-                Log.d(TAG, "onNext: "+integer);
+                Log.d(TAG, "onNext: " + integer);
             }
 
             @Override
