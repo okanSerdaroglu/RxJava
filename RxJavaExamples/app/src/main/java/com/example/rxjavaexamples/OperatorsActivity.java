@@ -3,12 +3,15 @@ package com.example.rxjavaexamples;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.TextView;
 
 import com.example.rxjavaexamples.models.Task;
 import com.example.rxjavaexamples.util.DataSource;
 
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -40,6 +43,72 @@ public class OperatorsActivity extends AppCompatActivity {
         /**overView();*/
         /**singleObjectCreate();*/
         listObjectCreate();
+
+    }
+
+    private void fromCallable() {
+        // create observable (method will not execute yet)
+        Observable<List<Task>> callable = Observable
+                .fromCallable(new Callable<List<Task>>() {
+                    @Override
+                    public List<Task> call() throws Exception {
+                        // long operations. Like room 
+                        return DataSource.createTasksList();
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        callable.subscribe(new Observer<List<Task>>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(@NonNull List<Task> tasks) {
+                Log.d(TAG, "onNext: " + tasks.size());
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
+    }
+
+    private void fromArray() {
+        Observable<Task> taskObservable = Observable
+                .fromArray(DataSource.createTaskArray())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        taskObservable.subscribe(new Observer<Task>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(@NonNull Task task) {
+                Log.d(TAG, "onNext: " + task.getDescription());
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
 
     }
 

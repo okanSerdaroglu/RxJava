@@ -18,4 +18,15 @@ public class DataSource {
         return tasks;
     }
 
+    public static Task[] createTaskArray (){
+        Task [] tasks = new Task[5];
+        tasks[0] = (new Task("Take out the trash", true, 3));
+        tasks[1] = (new Task("Walk the dog", false, 2));
+        tasks[2] = (new Task("Make my bed", true, 1));
+        tasks[3] = (new Task("Unload the dishwasher", false, 0));
+        tasks[4] = (new Task("Make dinner", true, 5));
+        return tasks;
+    }
+
+
 }
